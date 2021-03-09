@@ -19,10 +19,8 @@ public class HuffmanTree {
 	public HuffmanTree(Scanner input) {
 		
 	}
+
 	public void save(PrintStream output) {
-		
-	}
-	public void translate(PrintStream output) {
 		System.out.println(translate(root, ""));
 		output.write(Integer.parseInt(translate(root, "")));
 	}
