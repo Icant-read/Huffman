@@ -1,0 +1,90 @@
+import java.util.PriorityQueue;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Comparator;
+import java.util.*;
+
+
+
+public class encoder {
+
+	public static String compressString(String s) {
+		List<HuffmanTree> nodes = makeNodes(s);
+		HuffmanTree huffmanTree = makeTree(nodes);
+		HashMap<Character, String> hashMap = makeHash(huffmanTree);
+		String compressedString = makeCompress(s, hashMap);
+		return compressedString;
+	}
+
+	public static List<HuffmanTree> makeNodes(String s) {
+		List<HuffmanTree> nodes = new ArrayList<>();
+
+		for(int i = 0; i < s.length(); i = i + 1) {
+			HuffmanTree temp = new HuffmanTree(s.charAt(i), 1);
+			int index = -1;
+			for(int u = 0; u < nodes.size(); u++) {
+				if(nodes.get(u).c == temp.c) {
+					index = u;
+					break;
+				}
+			}
+			if(index != -1) {
+				nodes.get(index).val += 1;
+			} else {
+				nodes.add(temp);
+			}
+		}
+		return nodes;
+	}
+
+	public static HuffmanTree makeTree(List<HuffmanTree> nodes) {
+		PriorityQueue<HuffmanTree> priorityQueue = new PriorityQueue<>(nodes.size(), new Comparator<HuffmanTree>() {
+
+			@Override
+			public int subt(HuffmanTree h1, HuffmanTree h2) {
+				return h1.val - h2.val;
+			}
+		});
+
+		 for(HuffmanTree node : nodes) {
+		 	priorityQueue.add(node);
+		 }
+
+		while(priorityQueue.size() > 1) {
+			HuffmanTree a = priorityQueue.poll();
+			HuffmanTree b = priorityQueue.poll();
+			HuffmanTree comb = new HuffmanTree('_', a.val + b.val, a, b);
+			priorityQueue.add(comb);
+		}
+		return priorityQueue.poll();
+	}
+
+	public static HashMap<Character, String> makeHash(HuffmanTree t) {
+		HashMap<Character, String> hashMap = new HashMap<>();
+		hashHelp(t, "", hashMap);
+		return hashMap;
+	}
+
+	public static void hashHelp(HuffmanTree t, String f, HashMap<Character, String> hashMap) {
+		if(t.isLeaf()) {
+			hashMap.put(t.c, f);
+		} else {
+			if (t.leftBranch != null) {
+				hashHelp(t.leftBranch, f + "0", hashMap);
+			}
+			if (t.rightBranch != null) {
+				hashHelp(t.rightBranch, f + "1", hashMap);
+			}
+		}
+	}
+
+	public static String makeCompress(String input, HashMap<Character, String> hashMap) {
+		String output = "";
+		for (int i = 0; i < input.length(); i = i + 1) {
+			output = output + hashMap.get(input.charAt(i));
+		}
+		return output;
+	}
+}
