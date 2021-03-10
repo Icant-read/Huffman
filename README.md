@@ -8,7 +8,6 @@ import java.util.Queue;
 import java.util.Scanner;
 import java.util.TreeMap;
 
-
 public class HuffmanTree {
 
 	private Node root;
@@ -19,12 +18,12 @@ public class HuffmanTree {
 	public HuffmanTree(Scanner input) {
 		
 	}
-
 	public void save(PrintStream output) {
-		System.out.println(translate(root, ""));
-		output.write(Integer.parseInt(translate(root, "")));
+		System.out.println(translate(root, "000100", 4));
+		output.write(Integer.parseInt(translate(root, "000100", 4)));
 	}
-	public String translate(Node input, String output) {
+
+	public String translate(Node input, String output, int setByte) {
 		if(input==null) {
 			return output;
 		}
@@ -33,13 +32,13 @@ public class HuffmanTree {
 			output+=input.data;
 		}
 		else {
-			output = translate(input.l, output);
+			output = translate(input.l, output, setByte);
 			output+="0";
 			String add=Integer.toString(input.data, 2);
-			while(add.length()<4) {
+			while(add.length()<setByte) {
 				add = "0" + add;
 			}
-			output = translate(input.r, output);
+			output = translate(input.r, output, setByte);
 		}
 		return output;
 	}
