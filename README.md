@@ -10,6 +10,8 @@ import java.io.PrintStream;
 
 import java.util.ArrayList;
 
+import java.util.Arrays;
+
 import java.util.Comparator;
 
 import java.util.HashMap;
@@ -25,17 +27,17 @@ import java.util.Scanner;
 import java.util.TreeMap;
 
 public class HuffmanTree {
+
 	private Node root;
 	
 	public HuffmanTree(int[] frequencies) {
 		compressString(frequencies);
 	}
-	//
+	
 	public static String compressString(int[] frequencies) {
 		List<Node> nodes = makeNodes(frequencies);
-		//make tree inputs '95' instead of '*' but that actually works fine, problem is that it is in the wrong order
 		Node huffmanTree = makeTree(nodes);
-		Node p = huffmanTree; System.out.println(printInOrder(p,"")); //prints a copy of huffman tree in order
+		//Node p = huffmanTree; System.out.println(printInOrder(p,"")); //prints a copy of huffman tree in order
 		HashMap<Character, String> hashMap = makeHash(huffmanTree);
 		String compressedString = makeCompress(frequencies, hashMap);
 		System.out.println(translate(huffmanTree, "000100", 4));
@@ -128,7 +130,16 @@ public class HuffmanTree {
 	
 	//
 	public HuffmanTree(Scanner input) {
-		
+		ArrayList<Integer> l = new ArrayList<Integer>();
+		while(input.hasNext()) {
+			String a = input.next();
+			l.add(Integer.parseInt(a));
+		}
+		int[] b = new int[l.size()];
+		for(int x=0;x<b.length;x++) {
+			b[x]=l.get(x);
+		}
+		compressString(b);
 	}
 	public void save(PrintStream output) {
 		System.out.println(translate(root, "000100", 4));
@@ -142,7 +153,6 @@ public class HuffmanTree {
 		else if(input.l==null && input.r==null) {
 			output+="1";
 			String add=Integer.toString(input.data, 2);
-			System.out.println(input.data + " " + add);
 			while(add.length()<setByte) {
 				add = "0" + add;
 			}
