@@ -25,7 +25,6 @@ import java.util.Scanner;
 import java.util.TreeMap;
 
 public class HuffmanTree {
-
 	private Node root;
 	
 	public HuffmanTree(int[] frequencies) {
@@ -34,11 +33,22 @@ public class HuffmanTree {
 	//
 	public static String compressString(int[] frequencies) {
 		List<Node> nodes = makeNodes(frequencies);
+		//make tree inputs '95' instead of '*' but that actually works fine, problem is that it is in the wrong order
 		Node huffmanTree = makeTree(nodes);
+		Node p = huffmanTree; System.out.println(printInOrder(p,"")); //prints a copy of huffman tree in order
 		HashMap<Character, String> hashMap = makeHash(huffmanTree);
 		String compressedString = makeCompress(frequencies, hashMap);
 		System.out.println(translate(huffmanTree, "000100", 4));
 		return compressedString;
+	}
+
+	public static String printInOrder(Node n, String s) {
+		if(n!=null) {
+			   s =printInOrder(n.l, s);
+			   s+=(n.data + " ");
+			   s =printInOrder(n.r, s);
+		   }
+		return s;
 	}
 
 	public static List<Node> makeNodes(int[] s) {
@@ -64,7 +74,6 @@ public class HuffmanTree {
 
 	public static Node makeTree(List<Node> nodes) {
 		PriorityQueue<Node> priorityQueue = new PriorityQueue<>(nodes.size(), new Comparator<Node>() {
-		//PriorityQueue<Node> priorityQueue = new PriorityQueue<Node>();
 		
 			public int subt(Node h1, Node h2) {
 				return h1.data - h2.data;
@@ -80,7 +89,7 @@ public class HuffmanTree {
 		 for(Node node : nodes) {
 		 	priorityQueue.add(node);
 		 }
-
+		 
 		while(priorityQueue.size() > 1) {
 			Node a = priorityQueue.poll();
 			Node b = priorityQueue.poll();
@@ -132,15 +141,16 @@ public class HuffmanTree {
 		}
 		else if(input.l==null && input.r==null) {
 			output+="1";
-			output+=input.data;
+			String add=Integer.toString(input.data, 2);
+			System.out.println(input.data + " " + add);
+			while(add.length()<setByte) {
+				add = "0" + add;
+			}
+			output+=add;
 		}
 		else {
 			output+="0";
 			output = translate(input.l, output, setByte);
-			String add=Integer.toString(input.data, 2);
-			while(add.length()<setByte) {
-				add = "0" + add;
-			}
 			output = translate(input.r, output, setByte);
 		}
 		return output;
